@@ -1,7 +1,13 @@
-# SQL Window Function & Problems & Datasets
+### 30 SQL QUESTIONS ON WINDOW FUNCTIONS: BASICS TO ADVANCED LEVEL
 
-1. **Five Datasets** to use for different exercises.
-2. **Ten Problems** for each window function: 5 for basic to medium, and 5 for advanced, including usage of `PARTITION BY` and `ORDER BY`.
+- **Key Concepts**: Understand how window functions differ from standard aggregates.
+- **Real-World Datasets**: Work with practical datasets focusing on `ROW_NUMBER`, `RANK`, `LEAD`, and `LAG`.
+- **Hands-On Problems**: Solve curated challenges from basic to advanced levels.
+- **Step-by-Step Solutions**: Follow clear explanations for each problem.
+
+Want to dive deeper? Join our **Live SQL A-Z Workshop**! Over **3 days and 15 hours**, learn SQL comprehensively and complete two live projects.
+
+[**Join Our Live SQL Workshop!**](https://zeroanalyst.com/course/)
 
 ---
 
@@ -56,16 +62,16 @@ VALUES
    - Use `DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC)`.
 4. **Rank employees by hire date.**
    - Use `RANK() OVER (ORDER BY hire_date ASC)`.
-5. **Find the row number of each employee within the department.**
+5. **Find the row number of each employee within their department based on hire date.**
    - Use `ROW_NUMBER() OVER (PARTITION BY department ORDER BY hire_date)`.
 
 #### Advanced:
-6. **Find the employee with the highest salary in each department.**
-   - Use `RANK()` and `WHERE rank = 1`.
-7. **Calculate the rank difference between departments for employees with the same salary.**
+6. **Show the employee name and salary of the highest-paid employee in each department.**
+   - Use `RANK()` and filter for `WHERE rank = 1`.
+7. **Calculate the rank difference between employees with the same salary across departments.**
    - Combine `RANK()` with a self-join.
-8. **Get the 2nd highest salary in each department.**
-   - Use `RANK()` and `WHERE rank = 2`.
+8. **Get the 2nd highest salary in each department, showing the employee name.**
+   - Use `RANK()` and filter for `WHERE rank = 2`.
 9. **Find the average salary of the top 3 highest-paid employees in each department.**
    - Use `ROW_NUMBER()` with a `PARTITION BY department`.
 10. **Assign a dense rank to employees based on their hire date, resetting at each department change.**
@@ -131,13 +137,15 @@ VALUES
 6. **Calculate the rolling difference between sales for each product.**
    - Use both `LEAD` and `LAG` for comparison.
 7. **Identify sales where the previous sale amount was higher than the current sale.**
-   - Use `LAG()` with a `WHERE` clause.
-8. **For each sale, show the amount from two sales before.**
-   - Use `LAG(amount, 2) OVER (ORDER BY sale_date)`.
-9. **Compare current sales with the next two sales for each product.**
-   - Use `LEAD(amount, 2) OVER (PARTITION BY product_name ORDER BY sale_date)`.
-10. **Find the running total of sales for each store location.**
-    - Use `SUM(amount) OVER (PARTITION BY store_location ORDER BY sale_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)`.
+   - Use `L
+
+AG()` and a conditional filter.
+8. **Show total sales for each month, with the amount sold in the previous month.**
+   - Use `SUM(amount) OVER (PARTITION BY MONTH(sale_date))` combined with `LAG`.
+9. **Determine the percentage increase or decrease in sales compared to the previous sale.**
+   - Use `(amount - LAG(amount) OVER (ORDER BY sale_date)) / LAG(amount)`.
+10. **List all sales where the amount is greater than the average sales amount for that product.**
+    - Combine window functions with a subquery to find the average.
 
 ---
 
@@ -148,79 +156,61 @@ VALUES
 CREATE TABLE student_scores (
     student_id INT PRIMARY KEY,
     student_name VARCHAR(50),
-    subject VARCHAR(50),
+    exam_date DATE,
     score INT,
-    exam_date DATE
+    class VARCHAR(50)
 );
 
-INSERT INTO student_scores (student_id, student_name, subject, score, exam_date)
+INSERT INTO student_scores (student_id, student_name, exam_date, score, class)
 VALUES
-(1, 'John', 'Math', 85, '2023-05-15'),
-(2, 'Jane', 'Math', 95, '2023-05-15'),
-(3, 'Jake', 'History', 78, '2023-06-10'),
-(4, 'Julia', 'History', 88, '2023-06-10'),
-(5, 'Jill', 'Science', 92, '2023-07-01'),
-(6, 'Jimmy', 'Math', 82, '2023-05-16'),
-(7, 'Jessica', 'Math', 90, '2023-05-17'),
-(8, 'Jordan', 'History', 85, '2023-06-12'),
-(9, 'Joan', 'History', 80, '2023-06-14'),
-(10, 'Jason', 'Science', 76, '2023-07-02'),
-(11, 'Jackie', 'Science', 88, '2023-07-03'),
-(12, 'Jonah', 'Math', 91, '2023-05-20'),
-(13, 'Jerry', 'Science', 84, '2023-07-04'),
-(14, 'Janet', 'History', 90, '2023-06-15'),
-(15, 'Jasmine', 'Science', 79, '2023-07-05'),
-(16, 'Justin', 'Math', 87, '2023-05-18'),
-(17, 'Jade', 'History', 94, '2023-06-20'),
-(18, 'Jett', 'Math', 75, '2023-05-19'),
-(19, 'Jordan', 'Science', 91, '2023-07-06'),
-(20, 'Joy', 'Math', 89, '2023-05-22'),
-(21, 'Jess', 'History', 93, '2023-06-22'),
-(22, 'Jim', 'Science', 85, '2023-07-07'),
-(23, 'Jay', 'Math', 77, '2023-05-23'),
-(24, 'Jill', 'History', 82, '2023-06-25'),
-(25, 'Jack', 'Science', 90, '2023-07-08'),
-(26, 'Jordan', 'Math', 95, '2023-05-25'),
-(27, 'Jessie', 'History', 86, '2023-06-28'),
-(28, 'Jenna', 'Science', 80, '2023-07-09'),
-(29, 'Jodie', 'Math', 92, '2023-05-30'),
-(30, 'Jamie', 'History', 81, '2023-06-30'),
-(31, 'Jacob', 'Science', 94, '2023-07-10'),
-(32, 'Jan', 'Math', 84, '2023-06-02'),
-(33, 'Joey', 'History', 83, '2023-06-04'),
-(34, 'Jasmine', 'Science', 78, '2023-07-11'),
-(35, 'Jasper', 'Math', 90, '2023-06-06'),
-(36, 'Jordan', 'History', 95, '2023-06-08'),
-(37, 'Jazzy', 'Science', 88, '2023-07-12'),
-(38, 'Jillian', 'Math', 91, '2023-06-10'),
-(39, 'Joelle', 'History', 79, '2023-06-12'),
-(40, 'Juno', 'Science', 82, '2023-07-13');
-
+(1, 'Alice', '2023-01-15', 85, 'A'),
+(2, 'Bob', '2023-01-15', 90, 'A'),
+(3, 'Charlie', '2023-01-15', 78, 'A'),
+(4, 'Diana', '2023-02-01', 88, 'B'),
+(5, 'Eve', '2023-02-01', 95, 'B'),
+(6, 'Frank', '2023-02-01', 84, 'B'),
+(7, 'Grace', '2023-03-10', 92, 'A'),
+(8, 'Hank', '2023-03-10', 87, 'A'),
+(9, 'Ivy', '2023-03-10', 82, 'A'),
+(10, 'Jack', '2023-04-15', 76, 'B'),
+(11, 'Kate', '2023-04-15', 89, 'B'),
+(12, 'Leo', '2023-04-15', 91, 'B'),
+(13, 'Mia', '2023-05-12', 80, 'A'),
+(14, 'Nick', '2023-05-12', 93, 'A'),
+(15, 'Olivia', '2023-05-12', 87, 'A'),
+(16, 'Paul', '2023-06-05', 86, 'B'),
+(17, 'Quincy', '2023-06-05', 88, 'B'),
+(18, 'Rita', '2023-06-05', 90, 'B'),
+(19, 'Steve', '2023-07-07', 95, 'A'),
+(20, 'Tom', '2023-07-07', 89, 'A'),
+(21, 'Uma', '2023-07-07', 84, 'A'),
+(22, 'Victor', '2023-08-10', 78, 'B'),
+(23, 'Wendy', '2023-08-10', 90, 'B'),
+(24, 'Xander', '2023-08-10', 85, 'B'),
+(25, 'Yara', '2023-09-12', 92, 'A');
 ```
 
-### Problems: ROW_NUMBER, RANK, DENSE_RANK, LEAD, LAG
+### Problems: RANK, DENSE_RANK
 #### Basic to Medium:
-1. **Rank students by their score in each subject.**
-   - Use `RANK() OVER (PARTITION BY subject ORDER BY score DESC)`.
-2. **Find the row number of students based on their exam date.**
-   - Use `ROW_NUMBER() OVER (ORDER BY exam_date)`.
-3. **Identify the score difference between consecutive exams for each student.**
-   - Use `LAG(score) OVER (PARTITION BY student_name ORDER BY exam_date)`.
-4. **Show the next student’s score for each subject.**
-   - Use `LEAD(score) OVER (PARTITION BY subject ORDER BY exam_date)`.
-5. **Calculate the dense rank of students based on their score across all subjects.**
+1. **Rank students based on their scores for each exam.**
+   - Use `RANK() OVER (PARTITION BY exam_date ORDER BY score DESC)`.
+2. **Determine the dense rank of students based on their scores.**
    - Use `DENSE_RANK() OVER (ORDER BY score DESC)`.
+3. **Calculate the score difference between the current and previous exam for each student.**
+   - Use `LAG(score) OVER (PARTITION BY student_name ORDER BY exam_date)`.
+4. **List students who improved their score compared to the previous exam.**
+   - Use `LAG(score)`, and filter results where the difference is greater than 0.
+5. **Determine the highest score for each class.**
+   - Use `MAX(score) OVER (PARTITION BY class)`.
 
 #### Advanced:
-6. **Rank students within each subject, but reset the rank after every 5 students.**
-   - Use `NTILE(5) OVER (PARTITION BY subject ORDER BY score DESC)`.
-7. **Find students who improved their score compared to the previous exam.**
-   - Use `LAG()` and a `WHERE` clause.
-8. **Calculate the cumulative score for each student in all subjects.**
-   - Use `SUM(score) OVER (PARTITION BY student_name ORDER BY exam_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)`.
-9. **Find the second-highest score in each subject.**
-   - Use `RANK()` with `WHERE`.
-10. **Show students who have not improved compared to their previous exam score.**
-    - Use `LAG(score)` with comparison.
-
----
+6. **Reset the rank for students after every 5 students based on their scores.**
+   - Use a combination of `ROW_NUMBER()` and `DENSE_RANK()`.
+7. **Show the count of students who improved their score compared to the previous exam.**
+   - Use a conditional count with `LAG()`.
+8. **Find the percentage increase in scores for each student compared to their previous exam.**
+   - Use `(score - LAG(score) OVER (PARTITION BY student_name ORDER BY exam_date)) / LAG(score)`.
+9. **List all students with their scores and whether they improved from the last exam (yes/no).**
+   - Use a `CASE` statement combined with `LAG()`.
+10. **Rank students within their class, considering ties.**
+    - Use `RANK()` and partition by class.
