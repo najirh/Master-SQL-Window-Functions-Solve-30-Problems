@@ -188,5 +188,3 @@ VALUES
     - Use `LAG(score)` with comparison.
 
 ---
-
-Would you like more datasets or customization on any problem sets?
