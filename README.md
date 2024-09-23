@@ -1,4 +1,4 @@
-# Window Function & Problems & Datasets
+# SQL Window Function & Problems & Datasets
 
 1. **Five Datasets** to use for different exercises.
 2. **Ten Problems** for each window function: 5 for basic to medium, and 5 for advanced, including usage of `PARTITION BY` and `ORDER BY`.
